@@ -1,0 +1,19 @@
+
+> api-gateway@1.0.0 watch /Users/luisenriquegonzalezrodriguez/Documents/Gitlab/codi/api-gateway
+> ts-node-dev src/index.ts
+
+Using ts-node version 8.3.0, typescript version 3.5.3
+this.dbUrl: mongodb://mongoadmin:mongoadmin@localhost:27017
+servicesFound: []
+[90m[22-07-2019 19:26:18.090][0m[32m Servicio ejecutado exitosamente[0m
+[90m[22-07-2019 19:26:18.097][0m[32m Escuchando en el puerto 3002[0m
+Requesting....
+req.url: /hola/mundo2
+req.method: POST
+api: { _id: 5d363792751eb416c49511d0,
+  host: 'asdasd34343',
+  endpoint: '/hola/mundo2',
+  method: 'POST',
+  port: '8080',
+  version: '1.0.2',
+  foundAt: 2019-07-22T22:24:18.893Z }
