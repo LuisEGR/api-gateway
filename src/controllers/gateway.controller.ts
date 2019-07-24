@@ -1,12 +1,12 @@
 import { Request, Response, Router } from 'express';
 import { Logger, LColor } from 'logger-colors';
 import request from 'request';
-import { DataGatewayController, ApiSearch } from './data.controller';
+import { DataGatewayController, ApiSearch, ApiDescription } from './data.controller';
 import { IncomingMessage } from 'http';
 import { BodyProcessor } from '../extras/BodyProcessor.class';
 const router: Router = Router();
 const logger = new Logger();
-const dataCtrl = new DataGatewayController();
+const dataCtrl = DataGatewayController.getInstance();
 const separador = '----------------------------------------------------';
 
 const startRequest = (req, res, api) => {
@@ -21,7 +21,8 @@ const startRequest = (req, res, api) => {
 
 
     // logger.info(api._id + '', true);
-    const re = request[api.method.toLowerCase()](api.host + api.endpoint, {
+    const fullUrl = api.host + ':' + api.port + api.endpoint;
+    const re = request[api.method.toLowerCase()](fullUrl, {
         headers: {
             'accept-encoding': 'identity', // Evitar GZIP para poder hacer log
         },
@@ -34,6 +35,8 @@ const startRequest = (req, res, api) => {
         response.on('end', () => {
             const endTime = (new Date()).getTime();
             totalTime = endTime - actualTime;
+            logger.success('');
+            logger.success('');
             logger.success(api.name + ' v' + api.version, true);
             logger.success(api.endpoint, true);
             logger.success('FROM:\t' + getIp(req), false);
@@ -42,7 +45,7 @@ const startRequest = (req, res, api) => {
             logger.info(separador);
             logger.cyan('REQUEST', true);
             logger.cyan('METHOD:\t' + api.method, false);
-            logger.cyan('URL:   \t' + api.host + api.endpoint, false);
+            logger.cyan('URL:   \t' + fullUrl, false);
             logger.cyan('HEADERS:', false);
             Object.keys(req.headers).forEach((h) => {
                 // logger.cyan(h + ":\t" + req.headers[h], false);
@@ -90,8 +93,15 @@ const startRequest = (req, res, api) => {
     });
 
     req.on('error', (err) => {
-        logger.error("REQUEST ERROR:", err);
+        logger.error("1-REQUEST ERROR:", err);
+        sendError(res, err, api);
     });
+
+    re.on('error', (err) => {
+        console.error("2-REQUEST ERROR:", err);
+        sendError(res, err, api);
+    });
+
     req.pipe(re).pipe(res);
 };
 
@@ -103,6 +113,19 @@ function getIp(req: Request) {
 function getUser(req: Request) {
     return req.headers['iv-user'] || 'desconocido';
 }
+
+function sendError(res: Response, error: any, api: ApiDescription) {
+    if (error.code === 'ECONNREFUSED') {
+        res.status(500).send({
+            message: "Gateway can't connect to service: " + api.name,
+            code: error.code,
+            port: error.port,
+        });
+    } else {
+        res.status(500).send(error);
+    }
+}
+
 router.all('*', (req: Request, res: Response) => {
 
     logger.info(separador);
@@ -113,7 +136,11 @@ router.all('*', (req: Request, res: Response) => {
     dataCtrl
         .getApi(apib)
         .then((api) => {
-            startRequest(req, res, api);
+            if (api != null) {
+                startRequest(req, res, api);
+            } else {
+                res.sendStatus(404);
+            }
         });
 });
 
