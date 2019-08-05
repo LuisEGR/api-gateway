@@ -128,15 +128,15 @@ function sendError(res: Response, error: any, api: ApiDescription) {
 
 router.all('*', (req: Request, res: Response) => {
 
-    logger.info(separador);
-    logger.info("Processing request: " + req.method + ' ' + req.url);
-    logger.info('', true);
 
     const apib: ApiSearch = { method: req.method, endpoint: req.url };
     dataCtrl
         .getApi(apib)
         .then((api) => {
-            if (api != null) {
+            if (api) {
+                logger.info(separador);
+                logger.info("Processing request: " + req.method + ' ' + req.url);
+                logger.info('', true);
                 startRequest(req, res, api);
             } else {
                 res.sendStatus(404);

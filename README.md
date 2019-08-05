@@ -5,6 +5,7 @@
 
 Variable | Default Value | description
 ---: | :--- | :---
+MONGO_HOST|localhost| Mongo server host
 MONGO_COLLECTION|prueba| Mongo collection to use
 MONGO_DB|gateway| Mongo db to use
 MONGO_USER|mongoadmin| Mongo user to use

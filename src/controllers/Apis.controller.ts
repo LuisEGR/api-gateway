@@ -23,15 +23,22 @@ export function autoDiscovery(printAll: boolean = false) {
             request.get(url, { timeout: 1000 }, (err, res, body) => {
                 servicesProcesed++;
                 if (err == null) {
-                    const b = JSON.parse(body);
+                    let b: { apis: any; version?: any; };
+                    try {
+                        b = JSON.parse(body);
+                    } catch (e) { // Error no JSON
+                        b = {
+                            apis: [],
+                        };
+                    }
                     b.apis = b.apis.map((api: any) => {
-                        api.host = 'http://' + process.env[s];
-                        api.port = port;
-                        api._id = Buffer.from(api.endpoint + api.method).toString('base64');
-                        api._foundAt = moment().tz('America/Mexico_City').format();
-                        api._lastRequest = null;
-                        return api;
-                    });
+                            api.host = 'http://' + process.env[s];
+                            api.port = port;
+                            api._id = Buffer.from(api.endpoint + api.method).toString('base64');
+                            api._foundAt = moment().tz('America/Mexico_City').format();
+                            api._lastRequest = null;
+                            return api;
+                        });
 
                     b.apis.forEach((api) => {
                         const apiToSave: ApiDescription = {

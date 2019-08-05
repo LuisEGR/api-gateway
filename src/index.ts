@@ -24,6 +24,9 @@ setInterval(() => {
     autoDiscovery();
 }, timeInt);
 
+app.get('/describe', (req, res) => {
+    res.sendStatus(404);
+});
 
 app.get('/discover', (req, res) => {
     autoDiscovery().then((apis) => {

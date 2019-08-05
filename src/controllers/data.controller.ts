@@ -33,7 +33,7 @@ export class DataGatewayController {
             if (this.conection) {
                 resolve(this.conection);
             } else {
-                resolve(DataGatewayController.connect());
+                return DataGatewayController.connect();
             }
         });
     }
@@ -59,7 +59,11 @@ export class DataGatewayController {
         const client = new MongoClient(dbUrl, { useNewUrlParser: true });
         return client.connect().then((cliente: MongoClient) => {
             DataGatewayController.conection = cliente.db(dbName).collection(collectionName);
+            DataGatewayController.conection.createIndex({method: 1, endpoint: 1}, {unique: true});
+
             return DataGatewayController.conection;
+        }).catch((e) => {
+            console.error("Error de conexión con MongoDB: ", e.toString());
         });
     }
     private allApisCache: any = [];
