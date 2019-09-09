@@ -1,4 +1,5 @@
 FROM node:8.15.0-alpine
+RUN apk --no-cache add curl
 ADD . .
 EXPOSE 4000
 ENV FORCE_COLOR 1

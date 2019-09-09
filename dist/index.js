@@ -7,8 +7,10 @@ var logger_colors_1 = require("logger-colors");
 var express_1 = __importDefault(require("express"));
 var apis_controller_1 = require("./controllers/apis.controller");
 var gateway_controller_1 = require("./controllers/gateway.controller");
+var data_controller_1 = require("./controllers/data.controller");
 var logger = new logger_colors_1.Logger();
 var port = Number(process.env.PORT) || 3002;
+var dataC = data_controller_1.DataGatewayController.getInstance();
 var app = express_1.default();
 apis_controller_1.autoDiscovery(true).then(function () {
     app.listen(port, function () {
@@ -26,6 +28,7 @@ app.get('/describe', function (req, res) {
     res.sendStatus(404);
 });
 app.get('/discover', function (req, res) {
+    dataC.deleteCache();
     apis_controller_1.autoDiscovery().then(function (apis) {
         res.send(apis);
     });

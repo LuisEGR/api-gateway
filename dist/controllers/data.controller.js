@@ -61,6 +61,12 @@ var DataGatewayController = /** @class */ (function () {
                 }
             });
         }); };
+        this.deleteCache = function () {
+            _this.allApisCache.length = 0;
+            // const collection = await DataGatewayController.getConection();
+            // return collection.deleteMany({})
+            // .catch((e) => e.toString());
+        };
         this.getApi = function (filter) { return __awaiter(_this, void 0, void 0, function () {
             var api, collection;
             return __generator(this, function (_a) {

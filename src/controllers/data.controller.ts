@@ -86,6 +86,13 @@ export class DataGatewayController {
             .catch((e) => e.toString());
     }
 
+    public deleteCache =  () => {
+        this.allApisCache.length = 0;
+        // const collection = await DataGatewayController.getConection();
+        // return collection.deleteMany({})
+        // .catch((e) => e.toString());
+    }
+
     public getApi = async (filter: ApiSearch): Promise<ApiDescription | null> => {
         const api = this.findLocalApi(filter);
         if (api) {

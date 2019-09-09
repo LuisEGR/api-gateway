@@ -2,12 +2,13 @@ import { Logger } from 'logger-colors';
 import express from 'express';
 import { autoDiscovery } from './controllers/apis.controller';
 import { GatewayController } from './controllers/gateway.controller';
+import { DataGatewayController } from './controllers/data.controller';
 
 
 const logger = new Logger();
 const port: number = Number(process.env.PORT) || 3002;
 
-
+const dataC = DataGatewayController.getInstance();
 
 const app: express.Application = express();
 autoDiscovery(true).then(() => {
@@ -29,6 +30,7 @@ app.get('/describe', (req, res) => {
 });
 
 app.get('/discover', (req, res) => {
+    dataC.deleteCache();
     autoDiscovery().then((apis) => {
         res.send(apis);
     });

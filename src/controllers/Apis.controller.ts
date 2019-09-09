@@ -23,7 +23,7 @@ export function autoDiscovery(printAll: boolean = false) {
             request.get(url, { timeout: 1000 }, (err, res, body) => {
                 servicesProcesed++;
                 if (err == null) {
-                    let b: { apis: any; version?: any; };
+                    let b: { apis: any; version?: any; service?: string };
                     try {
                         b = JSON.parse(body);
                     } catch (e) { // Error no JSON
@@ -33,8 +33,11 @@ export function autoDiscovery(printAll: boolean = false) {
                     }
                     b.apis = b.apis.map((api: any) => {
                             api.host = 'http://' + process.env[s];
+                            if (b.service) {
+                                api.host = 'http://' + b.service;
+                            }
                             api.port = port;
-                            api._id = Buffer.from(api.endpoint + api.method).toString('base64');
+                            api._id = Buffer.from(api.endpoint + api.method + api.host).toString('base64');
                             api._foundAt = moment().tz('America/Mexico_City').format();
                             api._lastRequest = null;
                             return api;
@@ -48,6 +51,7 @@ export function autoDiscovery(printAll: boolean = false) {
                             port: api.port,
                             method: api.method,
                             version: b.version,
+                            totalRequests: 0,
                         };
                         services.push(apiToSave);
                         dataCtrl.addApi(apiToSave).then((row) => {

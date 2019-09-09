@@ -74,8 +74,11 @@ function autoDiscovery(printAll) {
                     }
                     b_1.apis = b_1.apis.map(function (api) {
                         api.host = 'http://' + process.env[s];
+                        if (b_1.service) {
+                            api.host = 'http://' + b_1.service;
+                        }
                         api.port = port;
-                        api._id = Buffer.from(api.endpoint + api.method).toString('base64');
+                        api._id = Buffer.from(api.endpoint + api.method + api.host).toString('base64');
                         api._foundAt = moment_timezone_1.default().tz('America/Mexico_City').format();
                         api._lastRequest = null;
                         return api;

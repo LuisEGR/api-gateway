@@ -133,9 +133,9 @@ router.all('*', (req: Request, res: Response) => {
     dataCtrl
         .getApi(apib)
         .then((api) => {
-            if (api) {
+            if (api && api.method !== 'HEAD') {
                 logger.info(separador);
-                logger.info("Processing request: " + req.method + ' ' + req.url);
+                logger.info("Processing request: " + api.method + ' ' + api.endpoint);
                 logger.info('', true);
                 startRequest(req, res, api);
             } else {
