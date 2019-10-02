@@ -91,6 +91,7 @@ function autoDiscovery(printAll) {
                             port: api.port,
                             method: api.method,
                             version: b_1.version,
+                            totalRequests: 0,
                         };
                         services.push(apiToSave);
                         dataCtrl.addApi(apiToSave).then(function (row) {
