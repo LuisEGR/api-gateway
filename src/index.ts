@@ -3,7 +3,7 @@ import express from 'express';
 import { autoDiscovery } from './controllers/apis.controller';
 import { GatewayController } from './controllers/gateway.controller';
 import { DataGatewayController } from './controllers/data.controller';
-
+import cors from 'cors';
 
 const logger = new Logger();
 const port: number = Number(process.env.PORT) || 3002;
@@ -11,13 +11,7 @@ const port: number = Number(process.env.PORT) || 3002;
 const dataC = DataGatewayController.getInstance();
 
 const app: express.Application = express();
-autoDiscovery(true).then(() => {
-    app.listen(port, () => {
-        logger.success('');
-        logger.success("API Gateway Ready", true);
-        logger.success(`Listening on port ${port}`, true);
-    });
-});
+
 
 const timeInt = parseInt(process.env.INTERVAL_DISCOVERY || '6000', 10);
 // Find apis every 1 minute
@@ -37,8 +31,15 @@ app.get('/discover', (req, res) => {
 });
 
 app.use(GatewayController);
+app.use(cors());
 
-
+autoDiscovery(true).then(() => {
+    app.listen(port, () => {
+        logger.success('');
+        logger.success("API Gateway Ready", true);
+        logger.success(`Listening on port ${port}`, true);
+    });
+});
 export default app;
 
 
