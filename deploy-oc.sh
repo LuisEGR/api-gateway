@@ -8,7 +8,7 @@ docker push nexus-0.dev.openshift.multivaloresgf.local:18444/codi/codi-api-gatew
 
 oc project codi
 
-oc delete all --selector app=codi-codi-api-gateway
+oc delete all --selector app=codi-api-gateway
 
 oc new-app --name=codi-api-gateway \
 --docker-image=nexus-0.dev.openshift.multivaloresgf.local:18444/codi/codi-api-gateway:dev \
